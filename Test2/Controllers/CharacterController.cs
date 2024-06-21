@@ -73,16 +73,20 @@ namespace ExampleTest2.Controllers
                 if (character.CurrentWeight + itemDto.Amount * item.Weight > character.MaxWeight)
                     return BadRequest("Character can't carry that much weight");
                 
-                var hasSuchItems = character.Backpacks.Select(e => e.ItemId == item.Id);
-                if (hasSuchItems.IsNullOrEmpty())
+                var itemAddedDto = new ItemAddedDTO()
                 {
-                    Console.WriteLine("----------- Updating item");
+                    Amount = itemDto.Amount,
+                    ItemId = item.Id,
+                    CharacterId = characterId
+                };
+                
+                if (character.Backpacks.Any(e => e.ItemId == item.Id))
+                {
                     await _dbService.UpdateItemAmount(characterId, itemDto.ItemId, itemDto.Amount);
+                    itemAddedDtoList.Add(itemAddedDto);
                 }
                 else
                 {
-                    
-                    Console.WriteLine("----------- Adding new item");
                     var backpack = new Backpack()
                     {
                         CharacterId = characterId,
@@ -96,15 +100,7 @@ namespace ExampleTest2.Controllers
                         character.CurrentWeight += itemDto.Amount * item.Weight;
                         await _dbService.AddNewItemForCharacter(backpack);
                         scope.Complete();
-                        Console.WriteLine("----------- New item added");
                     }
-
-                    var itemAddedDto = new ItemAddedDTO()
-                    {
-                        Amount = itemDto.Amount,
-                        ItemId = item.Id,
-                        CharacterId = characterId
-                    };
                     
                     itemAddedDtoList.Add(itemAddedDto);
                 }
