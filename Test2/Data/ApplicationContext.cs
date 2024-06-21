@@ -61,8 +61,8 @@ public class ApplicationContext : DbContext
                 Id = 1,
                 FirstName = "John",
                 LastName = "Doe",
-                CurrentWeight = 0,
-                MaxWeight = 1000
+                CurrentWeight = 1000,
+                MaxWeight = 5000
             },
             new Character()
             {
@@ -70,7 +70,7 @@ public class ApplicationContext : DbContext
                 FirstName = "Stephen",
                 LastName = "King",
                 CurrentWeight = 500,
-                MaxWeight = 2000
+                MaxWeight = 1000
             }
         });
         

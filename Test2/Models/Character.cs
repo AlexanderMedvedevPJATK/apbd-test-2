@@ -16,5 +16,7 @@ public class Character
     
     public int CurrentWeight { get; set; }
     public int MaxWeight { get; set; }
+    public ICollection<Backpack> Backpacks { get; set; } = new List<Backpack>();
     
+    public ICollection<CharacterTitle> CharacterTitles { get; set; } = new List<CharacterTitle>();
 }
