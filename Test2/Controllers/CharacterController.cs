@@ -74,27 +74,31 @@ namespace ExampleTest2.Controllers
                     return BadRequest("Character can't carry that much weight");
                 
                 var hasSuchItems = character.Backpacks.Select(e => e.ItemId == item.Id);
-                if (!hasSuchItems.IsNullOrEmpty())
+                if (hasSuchItems.IsNullOrEmpty())
                 {
+                    Console.WriteLine("----------- Updating item");
                     await _dbService.UpdateItemAmount(characterId, itemDto.ItemId, itemDto.Amount);
                 }
                 else
                 {
+                    
+                    Console.WriteLine("----------- Adding new item");
                     var backpack = new Backpack()
                     {
                         CharacterId = characterId,
                         ItemId = item.Id,
                         Amount = itemDto.Amount
                     };
-            
-                    character.CurrentWeight += itemDto.Amount * item.Weight;
-                    
+
+
                     using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                     {
+                        character.CurrentWeight += itemDto.Amount * item.Weight;
                         await _dbService.AddNewItemForCharacter(backpack);
                         scope.Complete();
+                        Console.WriteLine("----------- New item added");
                     }
-                    
+
                     var itemAddedDto = new ItemAddedDTO()
                     {
                         Amount = itemDto.Amount,
